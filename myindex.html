@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BMI Calculator</title>
+</head>
+<body>
+    <h1>BMI Calculator</h1>
+    <h2>Made by Mahmoud Sarhan</h2>
+    <h3>I hope you enjoy it(The head helped me ngl)</h3>
+    <section>
+        <p><em>Enter your data, bro</em></p>
+        <form id="Your_F_BMI">
+            <label for="weight">Weight (In Kilograms, American!!)</label>
+            <input type="number" id="weight" step="0.1" placeholder="your weight, fat boy" required>
+            <br><br>
+            <label for="height">Height (In meters, imperial!!):</label>
+            <input type="number" id="height" step="0.01" placeholder="your number" required>
+            <br><br>
+            <label for="gender">Gender (Two options only):</label>
+            <input list="genders" id="gender" placeholder="Select it">
+            <datalist id="genders">
+                <option value="Male">
+                <option value="Female">
+            </datalist>
+            <br><br>
+            <button type="button" onclick="runAnalysis()">Analyze</button>
+            <button type="reset">Reset</button>
+        </form>
+    </section>
+    <hr>
+    <section>
+        <h3>Calculation</h3>
+        <p>Processing: <progress id="calcProgress" value="0" max="100"></progress></p>
+        <fieldset>
+            <legend><strong>Results Display</strong></legend>
+            <p>Calculated <abbr title="Body Mass Index">BMI</abbr>: <mark id="bmiOutput">0.00</mark></p>
+            <p>Scale:</p>
+            <meter id="bmiMeter" min="10" max="40" low="18.5" high="25" optimum="22" value="0"></meter>
+            <p><small>Note: This value represents mass (M<sub>body</sub>) relative to height (H<sup>2</sup>).</small></p>
+        </fieldset>
+    </section>
+    <dialog id="healthDialog">
+        <h3>Recommendation</h3>
+        <p id="recommendationText">Please run the analysis first</p>
+        <p>To print this report, press <kbd>Ctrl</kbd> + <kbd>P</kbd></p>
+        <button onclick="document.getElementById('healthDialog').close()">Close Window</button>
+    </dialog>
+    <hr>
+    <section>
+        <h3>Educational Media</h3>
+        <p>Instructional Audio: <audio controls src="https://www.w3schools.com/html/horse.ogg"></audio></p>
+        <p>Video Tutorial: <br> <video width="320" controls src="https://www.w3schools.com/html/mov_bbb.mp4"></video></p>
+    </section>
+     <script>
+        function runAnalysis() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const progressBar = document.getElementById('calcProgress');
+            const bmiOutput = document.getElementById('bmiOutput');
+            const bmiMeter = document.getElementById('bmiMeter');
+            const dialog = document.getElementById('healthDialog');
+            const recText = document.getElementById('recommendationText');
+            if (!weight || !height || height <= 0) {
+                alert("Please provide valid biometric data.");
+                return;
+            }
+            let progress = 0;
+            function proceed() {
+                progress += 10;
+                progressBar.value = progress;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    const bmi = weight / (height * height);
+                    const fixedBmi = bmi.toFixed(2);
+                    bmiOutput.innerText = fixedBmi;
+                    bmiMeter.value = bmi;
+                    let category = "";
+                    if (bmi < 18.5) category = "Underweight";
+                    else if (bmi < 25) category = "Normal weight";
+                    else if (bmi < 30) category = "Overweight";
+                    else category = "Obese";
+                    recText.innerHTML = `Your BMI is <strong>${fixedBmi}</strong>. You are classified as: <em>${category}</em>.`;
+                    dialog.showModal();
+                }
+            };
+            const interval = setInterval(proceed, 50);
+        }
+    </script>
+</body>
+</html>
